@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>السلامة والإخلاء | مدرسة صناع الغد الخاصة</title>
+<style>
+:root{
+  --navy:#12355b; --blue:#1d6fa5; --gold:#d5a93a; --light:#f4f8fc;
+  --green:#218739; --red:#c53b3b; --text:#1d2a35; --white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#eef6fc,#fff9e8);color:var(--text)}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:28px 20px;text-align:center}
+.logo{width:78px;height:78px;border-radius:50%;background:white;color:var(--navy);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:800;font-size:24px;border:4px solid var(--gold)}
+header h1{margin:5px 0;font-size:27px}
+header p{margin:8px 0 0;opacity:.92}
+.container{max-width:900px;margin:28px auto;padding:0 16px}
+.card{background:white;border-radius:20px;padding:24px;box-shadow:0 10px 30px #12355b18;margin-bottom:20px}
+h2{color:var(--navy);margin-top:0}
+label{font-weight:700;display:block;margin:14px 0 7px}
+input,select{width:100%;padding:13px;border:1px solid #ccd8e2;border-radius:10px;font-size:16px}
+.question{border:1px solid #e0e8ef;border-radius:15px;padding:18px;margin:16px 0;background:#fbfdff}
+.question h3{font-size:17px;margin:0 0 12px;color:var(--navy)}
+.option{display:block;padding:11px 12px;border-radius:9px;margin:7px 0;background:#f3f7fa;font-weight:500;cursor:pointer}
+.option:hover{background:#e8f2f9}
+.option input{width:auto;margin-left:8px}
+button{border:0;border-radius:12px;padding:14px 24px;font-size:17px;font-weight:800;cursor:pointer}
+.primary{background:var(--navy);color:white;width:100%}
+.primary:hover{background:var(--blue)}
+.hidden{display:none}
+.result{text-align:center;padding:30px}
+.score{font-size:54px;font-weight:900;color:var(--navy)}
+.badge{display:inline-block;padding:8px 18px;border-radius:30px;font-weight:800;margin:12px}
+.pass{background:#e5f6e8;color:var(--green)}
+.fail{background:#fde9e9;color:var(--red)}
+.certificate{background:#fffdf6;border:10px double var(--gold);padding:45px 35px;text-align:center;min-height:650px;position:relative}
+.certificate h1{font-size:38px;color:var(--navy);margin:20px 0}
+.certificate h2{font-size:25px;color:var(--gold)}
+.student{font-size:30px;font-weight:900;border-bottom:2px solid #aaa;display:inline-block;padding:8px 35px}
+.cert-footer{display:flex;justify-content:space-between;margin-top:55px;font-size:14px}
+.note{background:#fff7dc;border-right:5px solid var(--gold);padding:13px;border-radius:8px}
+@media print{
+  body *{visibility:hidden}
+  #certificateArea,#certificateArea *{visibility:visible}
+  #certificateArea{position:absolute;left:0;top:0;width:100%}
+  .certificate{box-shadow:none;min-height:100vh}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">صناع<br>الغد</div>
+  <h1>برنامج الوعي بالسلامة والإخلاء</h1>
+  <p>مدرسة صناع الغد الخاصة</p>
+</header>
+
+<div class="container">
+  <section id="start" class="card">
+    <h2>اختبار الوعي بإجراءات السلامة</h2>
+    <p>أجب عن الأسئلة العشرة. يحصل الطالب على شهادة عند تحقيق <b>70% فأكثر</b>.</p>
+    <div class="note">اقرأ كل سؤال بعناية واختر إجابة واحدة فقط.</div>
+    <label>اسم الطالب/الطالبة *</label>
+    <input id="studentName" placeholder="اكتب الاسم الكامل">
+    <label>الصف</label>
+    <input id="grade" placeholder="مثال: الصف الثامن">
+    <label>الحلقة</label>
+    <select id="cycle">
+      <option value="">اختر الحلقة</option>
+      <option>الحلقة الأولى</option><option>الحلقة الثانية</option><option>الحلقة الثالثة</option>
+    </select>
+    <br><br>
+    <button class="primary" onclick="startQuiz()">بدء الاختبار</button>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <h2>الأسئلة</h2>
+    <form id="quizForm"></form>
+    <button class="primary" onclick="submitQuiz()">إنهاء الاختبار وإظهار النتيجة</button>
+  </section>
+
+  <section id="result" class="card hidden result"></section>
+
+  <section id="certificateArea" class="hidden">
+    <div class="certificate">
+      <div style="font-size:18px;font-weight:800;color:#12355b">مدرسة صناع الغد الخاصة</div>
+      <h1>شهادة إتمام</h1>
+      <p>تشهد مدرسة صناع الغد الخاصة بأن الطالب/الطالبة</p>
+      <div class="student" id="certName"></div>
+      <p style="font-size:20px;margin-top:30px">قد أتم/أتمت بنجاح</p>
+      <h2>برنامج التوعية بإجراءات السلامة والتصرف الآمن أثناء الأزمات والإخلاء</h2>
+      <p>بعد تحقيق نسبة</p>
+      <div class="score" id="certScore"></div>
+      <p>في تقييم الوعي بإجراءات الطوارئ والإخلاء، وهي نسبة لا تقل عن 70%.</p>
+      <div class="cert-footer">
+        <span>التاريخ: <b id="certDate"></b></span>
+        <span>إدارة المدرسة</span>
+      </div>
+    </div>
+    <br>
+    <button class="primary" onclick="window.print()">🖨️ طباعة الشهادة</button>
+  </section>
+</div>
+
+<script>
+const questions = [
+["عند سماع إنذار الحريق أو الإخلاء، ماذا يجب أن تفعل؟",["أستمر في الدرس حتى يخبرني المعلم","أخرج بهدوء مع المعلم وأتبع تعليمات الإخلاء","أركض بسرعة إلى الخارج","أعود لأخذ أغراضي"],1],
+["أثناء الإخلاء، أي تصرف هو الأكثر أمانا؟",["الجري ودفع الآخرين","استخدام المصعد","المشي بهدوء في مسار الإخلاء المحدد","الاختباء في الصف"],2],
+["إذا كان هناك دخان كثيف أثناء الحريق، ماذا تفعل؟",["أقترب من مصدر الدخان","أتحرك بالقرب من الأرض وأتبع طريق الخروج الآمن","أعود إلى الصف","أستخدم المصعد"],1],
+["إذا كنت في الطابق العلوي وحدث حريق، ما الطريق الذي يجب استخدامه؟",["المصعد","الدرج المخصص للإخلاء","أي طريق أراه مناسبا","العودة إلى الصف"],1],
+["ماذا تفعل إذا طلب منك المعلم إخلاء الصف؟",["أخرج بسرعة دون انتظار الآخرين","أتبع تعليمات المعلم وأخرج ضمن المجموعة","أعود لأخذ حقيبتي","أبقى في مكاني"],1],
+["لماذا يجب عدم العودة إلى المبنى بعد الإخلاء؟",["لأن الدرس انتهى","لأن المدرسة ستغلق","لأن العودة قد تعرضني للخطر","لأن المعلم قد يغضب"],2],
+["إذا وجدت زميلا يحتاج إلى المساعدة أثناء الإخلاء، ماذا تفعل؟",["أتركه وأخرج وحدي","أطلب المساعدة من المعلم أو المسؤول، وأساعد إذا كان ذلك آمنا","أعود إلى الصف","أتجاهله"],1],
+["أين يجب أن يتوجه الطلبة بعد الخروج من المبنى؟",["موقف السيارات","البوابة","نقطة التجمع المحددة للإخلاء","أي مكان قريب"],2],
+["إذا كان إنذار الحريق تدريبا، ماذا يجب أن تفعل؟",["أتجاهله لأنه تدريب","ألتزم بإجراءات الإخلاء كما هو مطلوب في التدريب","أبقى في الصف","أستخدم الهاتف لتصوير التدريب"],1],
+["عند حدوث حالة طارئة، ما أهم شيء يجب أن تتذكره؟",["الجري بسرعة","استخدام الهاتف لتصوير الحدث","العودة لأخذ الأغراض","المحافظة على الهدوء واتباع تعليمات المسؤولين"],3]
+];
+
+function startQuiz(){
+  const name=document.getElementById("studentName").value.trim();
+  if(!name){alert("يرجى كتابة اسم الطالب أولا.");return;}
+  const form=document.getElementById("quizForm");
+  form.innerHTML="";
+  questions.forEach((q,i)=>{
+    let html=`<div class="question"><h3>${i+1}. ${q[0]}</h3>`;
+    q[1].forEach((opt,j)=>{
+      html+=`<label class="option"><input type="radio" name="q${i}" value="${j}"> ${opt}</label>`;
+    });
+    html+="</div>";
+    form.innerHTML+=html;
+  });
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function submitQuiz(){
+  let score=0, unanswered=0;
+  questions.forEach((q,i)=>{
+    const selected=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!selected) unanswered++;
+    else if(Number(selected.value)===q[2]) score++;
+  });
+  if(unanswered){
+    if(!confirm(`يوجد ${unanswered} سؤال/أسئلة دون إجابة. هل تريد إنهاء الاختبار؟`)) return;
+  }
+  const percent=Math.round(score/questions.length*100);
+  const name=document.getElementById("studentName").value.trim();
+  const result=document.getElementById("result");
+  result.classList.remove("hidden");
+  result.innerHTML=`
+    <h2>${percent>=70?"🎉 مبروك!":"📚 تحتاج إلى تعزيز الوعي"}</h2>
+    <div class="score">${percent}%</div>
+    <div class="badge ${percent>=70?"pass":"fail"}">${percent>=70?"مؤهل للحصول على الشهادة":"لم يحقق درجة الاجتياز"}</div>
+    <p>الإجابات الصحيحة: <b>${score}</b> من <b>${questions.length}</b></p>
+    ${percent>=70?'<button class="primary" style="max-width:420px" onclick="showCertificate()">🎓 إصدار الشهادة</button>':'<p>درجة الاجتياز هي 70%. يرجى مراجعة إجراءات السلامة ثم إعادة التقييم.</p>'}
+  `;
+  document.getElementById("quiz").classList.add("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+  window._score=percent;
+}
+
+function showCertificate(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("certificateArea").classList.remove("hidden");
+  document.getElementById("certName").textContent=document.getElementById("studentName").value.trim();
+  document.getElementById("certScore").textContent=window._score+"%";
+  document.getElementById("certDate").textContent=new Date().toLocaleDateString("ar-AE");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
